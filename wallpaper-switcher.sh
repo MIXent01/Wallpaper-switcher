@@ -1,38 +1,39 @@
 #!/bin/bash
 
+# Your wallpapers dir
+DIR="$HOME/Documents/Wallpapers"
+
 # Files
 CONFIG="$HOME/.config/wofi/config"
 STYLE="$HOME/.config/wofi/style.css"
 COLORS="$HOME/.config/wofi/colors"
 
-# Your wallpapers directory
-DIR=$HOME/Documents/wallpapers/
+# Wofi Command
 
-if [[ $(pidof swaybg) ]]; then
-  pkill swaybg
-fi
-
-## Wofi Command
-wofi_command="wofi --show dmenu \
-			--conf ${CONFIG} --style ${STYLE} --color ${COLORS} \
-			--width=300 --height=400 \
-			--cache-file=/dev/null \
-			--hide-scroll --no-actions \
-			--define=matching=fuzzy"
+wofi_args=(
+  "wofi"
+  "--show" "dmenu"
+  "--conf" "$CONFIG"
+  "--style" "$STYLE"
+  "--width=400"
+  "--height=500"
+  "--cache-file=/dev/null"
+  "--no-actions"
+  "--hide-scroll"
+  "--allow-images"
+)
 
 menu(){
-  for file in $HOME/Documents/wallpapers/*; do
-    filename="${file%.*}"
-    filename="${filename:34}"  # Change 34 to the length of your wallpaper dir
-    printf "%s\n" "$filename"
+  for file in $DIR/*; do 
+    filename=$(basename "$file")
+    echo "$filename"
   done
 }
 
-swww query || swww init
 
 main() {
-choice=$(menu | ${wofi_command})
-swww img ${DIR}/${choice}.png --transition-fps 60 --transition-type any --transition-duration 1
+  choice=$(menu | "${wofi_args[@]}")
+  swww img "$DIR/$choice" --transition-fps 120 --transition-duration 1 --transition-type any
 }
 
-killall -f || main
+main
