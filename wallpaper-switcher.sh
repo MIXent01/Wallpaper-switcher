@@ -33,7 +33,7 @@ menu(){
 
 main() {
   choice=$(menu | "${wofi_args[@]}")
-  swww img "$DIR/$choice" --transition-fps 120 --transition-duration 1 --transition-type any
+  awww img "$DIR/$choice" --transition-fps 120 --transition-duration 1 --transition-type any
 }
 
 main
